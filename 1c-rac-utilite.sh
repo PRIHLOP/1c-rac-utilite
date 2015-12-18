@@ -79,7 +79,8 @@ if [ $DBNAME != "0" ]; then
 question "Желаете выполнить веб-публикацию базы с именем $DBNAME ?" && echo "/opt/1C/v8.3/i386/webinst -publish -apache22 -wsdir $DBNAME -dir '/var/www/$DBNAME' -connStr 'Srvr="localhost";Ref="$DBNAME";' -confPath /etc/apache2/apache2.conf" | bash
 sudo service apache2 reload > /dev/null
 fi
-echo;;
+echo
+echo "Публикация доступна по адресу http://$EXTIP/$DBNAME";;
    5) clear
 dbuid
 while [ -z "$DBUID" ]

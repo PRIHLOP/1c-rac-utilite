@@ -1,6 +1,12 @@
 #!/bin/bash
 
 #source ./config.cfg
+#request for root previlegies(need to reload apache web server when make 1c base web publication)
+if [[ $EUID -ne 0 ]]; then
+  echo "Запуск требует root прав для управления системными сервисами (apache2 для веб публикации)."
+  echo "Подтвердите запрос root прав вводом пароля."
+  sudo ls > /dev/null
+fi
 CL_STRING=$(/opt/1C/v8.3/i386/rac cluster list | grep 'cluster  *')
 CLUSTER=${CL_STRING:32}
 DBUSER=                           #PostgreSQL database user

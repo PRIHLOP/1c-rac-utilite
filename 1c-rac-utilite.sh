@@ -9,15 +9,14 @@ if [[ $EUID -ne 0 ]]; then
 fi
 CL_STRING=$(/opt/1C/v8.3/i386/rac cluster list | grep 'cluster  *')
 CLUSTER=${CL_STRING:32}
-DBUSER=                           #PostgreSQL database user
-DBPASS=                           #PostgreSQL database password
-OPTION=1                          #Default option select to resolve error
-#function for question with answer Y/N
+DBUSER=usr1cv8
+DBPASS='.lo9)P:?'
+OPTION=1
+EXTIP=$(/sbin/ifconfig | grep "inet addr" | grep -v "127.0.0.1" | awk '{ print $2 }' | awk -F: '{ print $2 }')
 question() {
   while echo -n "$1 [Y/N] " && read answer || true && ! grep -e '^[YyNn]$' <<< $answer > /dev/null; do echo "Введите N(n) либо Y(y)! "; done
   return $(tr 'YyNn' '0011' <<< $answer)
 }
-#function to resolve 1c db information
 dbuid() {
 read -p "Введите имя базы с которой желаете работать, или 0(ноль) для отмены: " DBNAME
 DBINFO=$(/opt/1C/v8.3/i386/rac infobase --cluster=$CLUSTER summary list | grep -w -B 1 $DBNAME | grep infobase)
@@ -44,6 +43,8 @@ echo "2) Добавить БД"
 echo "3) Удалить БД"
 echo "4) Выполнить веб публикацию серверной БД"
 echo "5) Удалить веб публикацию серверной БД"
+echo "6) Вывести список соединений"
+echo "7) Вывести список сеансов"
 echo "0) Выход"
 echo
 read -p "Выбранная опция: " OPTION
@@ -102,6 +103,11 @@ question "Желаете УДАЛИТЬ веб-публикацию базы с 
 sudo service apache2 reload > /dev/null
 fi
 echo;;
+   6) clear
+echo
+/opt/1C/v8.3/i386/rac connection --cluster=$CLUSTER list;;
+   7) clear
+/opt/1C/v8.3/i386/rac session --cluster=$CLUSTER list;;
    0) exit ;;
    *) echo
 echo "Неверно выбрана опция.";;

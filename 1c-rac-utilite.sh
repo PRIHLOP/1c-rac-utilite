@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#source ./config.cfg
+source ./config.cfg #connect main.conf file for define variables $DBUSER and $DBPASS
 #request for root previlegies(need to reload apache web server when make 1c base web publication)
 if [[ $EUID -ne 0 ]]; then
   echo "Запуск требует root прав для управления системными сервисами (apache2 для веб публикации)."
@@ -9,9 +9,10 @@ if [[ $EUID -ne 0 ]]; then
 fi
 CL_STRING=$(/opt/1C/v8.3/i386/rac cluster list | grep 'cluster  *')
 CLUSTER=${CL_STRING:32}
-DBUSER=                           #PostgreSQL database user
-DBPASS=                           #PostgreSQL database password
-OPTION=1                          #Default option select to resolve error
+#Comment variables defined in main.conf
+#DBUSER=                           #PostgreSQL database user
+#DBPASS=                           #PostgreSQL database password
+OPTION=1                          #Default option select to resolve error when script running with empty variable
 #function for question with answer Y/N
 question() {
   while echo -n "$1 [Y/N] " && read answer || true && ! grep -e '^[YyNn]$' <<< $answer > /dev/null; do echo "Введите N(n) либо Y(y)! "; done

@@ -58,7 +58,7 @@ case "$OPTION" in
 read -p "Введите имя создаваемой базы: " DBNAME
 /opt/1C/v8.3/i386/rac infobase create --cluster=$CLUSTER --name=$DBNAME --create-database --dbms=PostgreSQL --db-server=127.0.0.1 --db-name=$DBNAME --locale=ru --db-user=$DBUSER --db-pwd=$DBPASS --license-distribution=allow > /dev/null
 echo
-echo "БД успешна создана";;
+echo "БД успешно создана";;
    3) clear
 dbuid
 while [ -z "$DBUID" ]

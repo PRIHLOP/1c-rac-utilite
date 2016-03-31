@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source ./config.cfg #connect main.conf file for define variables $DBUSER and $DBPASS
+source ./main.conf #connect main.conf file for define variables $DBUSER and $DBPASS
 #request for root previlegies(need to reload apache web server when make 1c base web publication)
 if [[ $EUID -ne 0 ]]; then
   echo "Запуск требует root прав для управления системными сервисами (apache2 для веб публикации)."

@@ -47,6 +47,7 @@ echo "4) Выполнить веб публикацию серверной БД"
 echo "5) Удалить веб публикацию серверной БД"
 echo "6) Вывести список соединений"
 echo "7) Вывести список сеансов"
+echo "8) Завершить сеанс пользователя"
 echo "0) Выход"
 echo
 read -p "Выбранная опция: " OPTION
@@ -110,6 +111,9 @@ echo
 /opt/1C/v8.3/i386/rac connection --cluster=$CLUSTER list;;
    7) clear
 /opt/1C/v8.3/i386/rac session --cluster=$CLUSTER list;;
+   8) clear
+read -p "Введите id сессии: " SESSION
+/opt/1C/v8.3/i386/rac session --cluster=$CLUSTER terminate --session=$SESSION;;
    0) exit ;;
    *) echo
 echo "Неверно выбрана опция.";;

@@ -7,7 +7,7 @@ if [[ $EUID -ne 0 ]]; then
   echo "Подтвердите запрос root прав вводом пароля."
   sudo ls > /dev/null
 fi
-CL_STRING=$(/opt/1C/v8.3/i386/rac cluster list | grep 'cluster  *')
+CL_STRING=$($PROGRAMPATH/rac cluster list | grep 'cluster  *')
 CLUSTER=${CL_STRING:32}
 #Comment variables defined in main.conf
 #DBUSER=                           #PostgreSQL database user
@@ -21,7 +21,7 @@ question() {
 #function to resolve 1c db information
 dbuid() {
 read -p "Введите имя базы с которой желаете работать, или 0(ноль) для отмены: " DBNAME
-DBINFO=$(/opt/1C/v8.3/i386/rac infobase --cluster=$CLUSTER summary list | grep -w -B 1 $DBNAME | grep infobase)
+DBINFO=$($PROGRAMPATH/rac infobase --cluster=$CLUSTER summary list | grep -w -B 1 $DBNAME | grep infobase)
 DBUID=${DBINFO:11}
 }
 echo
@@ -34,7 +34,7 @@ echo
 echo
 echo "Информация о локальном кластере сервера 1С:"
 echo
-/opt/1C/v8.3/i386/rac cluster list
+$PROGRAMPATH/rac cluster list
 #echo "$CLUSTER"
 until [ $OPTION -eq 0 ]
 do
@@ -54,10 +54,10 @@ read -p "Выбранная опция: " OPTION
 echo
 case "$OPTION" in
    1) clear
-/opt/1C/v8.3/i386/rac infobase --cluster=$CLUSTER summary list ;;
+$PROGRAMPATH/rac infobase --cluster=$CLUSTER summary list ;;
    2) clear
 read -p "Введите имя создаваемой базы: " DBNAME
-/opt/1C/v8.3/i386/rac infobase create --cluster=$CLUSTER --name=$DBNAME --create-database --dbms=PostgreSQL --db-server=127.0.0.1 --db-name=$DBNAME --locale=ru --db-user=$DBUSER --db-pwd=$DBPASS --license-distribution=allow > /dev/null
+$PROGRAMPATH/rac infobase create --cluster=$CLUSTER --name=$DBNAME --create-database --dbms=PostgreSQL --db-server=127.0.0.1 --db-name=$DBNAME --locale=ru --db-user=$DBUSER --db-pwd=$DBPASS --license-distribution=allow > /dev/null
 echo
 echo "БД успешно создана";;
    3) clear
@@ -71,7 +71,7 @@ if [ $DBNAME != "0" ]; then
 fi
 done
 if [ $DBNAME != "0" ]; then
-question "Уверены что хотите удалить БД с именем $DBNAME ?" && /opt/1C/v8.3/i386/rac infobase drop --cluster=$CLUSTER --infobase=$DBUID --drop-database
+question "Уверены что хотите удалить БД с именем $DBNAME ?" && $PROGRAMPATH infobase drop --cluster=$CLUSTER --infobase=$DBUID --drop-database
 fi
 echo
 echo "БД $DBNAME успешно удалена!";;
@@ -86,7 +86,7 @@ if [ $DBNAME != "0" ]; then
 fi
 done
 if [ $DBNAME != "0" ]; then
-question "Желаете выполнить веб-публикацию базы с именем $DBNAME ?" && echo "/opt/1C/v8.3/i386/webinst -publish -apache22 -wsdir $DBNAME -dir '/var/www/$DBNAME' -connStr 'Srvr="localhost";Ref="$DBNAME";' -confPath /etc/apache2/apache2.conf" | bash
+question "Желаете выполнить веб-публикацию базы с именем $DBNAME ?" && echo "$PROGRAMPATH/webinst -publish -apache22 -wsdir $DBNAME -dir '/var/www/$DBNAME' -connStr 'Srvr="localhost";Ref="$DBNAME";' -confPath /etc/apache2/apache2.conf" | bash
 sudo service apache2 reload > /dev/null
 fi
 echo
@@ -102,18 +102,18 @@ if [ $DBNAME != "0" ]; then
 fi
 done
 if [ $DBNAME != "0" ]; then
-question "Желаете УДАЛИТЬ веб-публикацию базы с именем $DBNAME ?" && echo "/opt/1C/v8.3/i386/webinst -delete -apache22 -wsdir $DBNAME -dir '/var/www/$DBNAME' -connStr 'Srvr="localhost";Ref="$DBNAME";' -confPath /etc/apache2/apache2.conf" | bash
+question "Желаете УДАЛИТЬ веб-публикацию базы с именем $DBNAME ?" && echo "$PROGRAMPATH/webinst -delete -apache22 -wsdir $DBNAME -dir '/var/www/$DBNAME' -connStr 'Srvr="localhost";Ref="$DBNAME";' -confPath /etc/apache2/apache2.conf" | bash
 sudo service apache2 reload > /dev/null
 fi
 echo;;
   6) clear
 echo
-/opt/1C/v8.3/i386/rac connection --cluster=$CLUSTER list;;
+$PROGRAMPATH/rac connection --cluster=$CLUSTER list;;
    7) clear
-/opt/1C/v8.3/i386/rac session --cluster=$CLUSTER list;;
+$PROGRAMPATH/rac session --cluster=$CLUSTER list;;
    8) clear
 read -p "Введите id сессии: " SESSION
-/opt/1C/v8.3/i386/rac session --cluster=$CLUSTER terminate --session=$SESSION;;
+$PROGRAMPATH/rac session --cluster=$CLUSTER terminate --session=$SESSION;;
    0) exit ;;
    *) echo
 echo "Неверно выбрана опция.";;

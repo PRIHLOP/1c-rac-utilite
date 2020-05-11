@@ -71,7 +71,7 @@ if [ $DBNAME != "0" ]; then
 fi
 done
 if [ $DBNAME != "0" ]; then
-question "Уверены что хотите удалить БД с именем $DBNAME ?" && $PROGRAMPATH infobase drop --cluster=$CLUSTER --infobase=$DBUID --drop-database
+question "Уверены что хотите удалить БД с именем $DBNAME ?" && $PROGRAMPATH/rac infobase drop --cluster=$CLUSTER --infobase=$DBUID --drop-database --infobase-user=$INFOBASEADMIN --infobase-pwd=$INFOBASEPWD
 fi
 echo
 echo "БД $DBNAME успешно удалена!";;

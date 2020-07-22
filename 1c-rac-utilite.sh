@@ -42,7 +42,8 @@ echo
 echo "Выберите для продолжения: "
 echo "1) Вывести список БД"
 echo "2) Добавить БД"
-echo "3) Удалить БД"
+echo "3) Удалить Информациюнную базу из клатера"
+echo "∟3.1) Удалить Информационную базу из кластера вместе с данными"
 echo "4) Выполнить веб публикацию серверной БД"
 echo "5) Удалить веб публикацию серверной БД"
 echo "6) Вывести список соединений"
@@ -53,14 +54,33 @@ echo
 read -p "Выбранная опция: " OPTION
 echo
 case "$OPTION" in
+
    1) clear
 $PROGRAMPATH/rac infobase --cluster=$CLUSTER summary list ;;
+
    2) clear
 read -p "Введите имя создаваемой базы: " DBNAME
 $PROGRAMPATH/rac infobase create --cluster=$CLUSTER --name=$DBNAME --create-database --dbms=PostgreSQL --db-server=127.0.0.1 --db-name=$DBNAME --locale=ru --db-user=$DBUSER --db-pwd=$DBPASS --license-distribution=allow > /dev/null
 echo
 echo "БД успешно создана";;
+
    3) clear
+dbuid
+while [ -z "$DBUID" ]
+do
+if [ $DBNAME != "0" ]; then
+  echo
+  echo "БД с таким именем не найдена! Повторите ввод."
+  dbuid
+fi  
+done
+if [ $DBNAME != "0" ]; then
+question "Уверены что хотите удалить БД с именем $DBNAME ?" && $PROGRAMPATH/rac infobase drop --cluster=$CLUSTER --infobase=$DBUID --infobase-user=$INFOBASEADMIN --infobase-pwd=$INFOBASEPWD
+fi  
+echo
+echo "БД $DBNAME успешно удалена!";;
+
+   3.1) clear
 dbuid
 while [ -z "$DBUID" ]
 do
@@ -75,6 +95,7 @@ question "Уверены что хотите удалить БД с именем
 fi
 echo
 echo "БД $DBNAME успешно удалена!";;
+
    4) clear
 dbuid
 while [ -z "$DBUID" ]
@@ -91,6 +112,7 @@ sudo service apache2 reload > /dev/null
 fi
 echo
 echo "Публикация доступна по адресу http://$EXTIP/$DBNAME";;
+
    5) clear
 dbuid
 while [ -z "$DBUID" ]
@@ -106,15 +128,20 @@ question "Желаете УДАЛИТЬ веб-публикацию базы с 
 sudo service apache2 reload > /dev/null
 fi
 echo;;
+
   6) clear
 echo
 $PROGRAMPATH/rac connection --cluster=$CLUSTER list;;
+
    7) clear
 $PROGRAMPATH/rac session --cluster=$CLUSTER list;;
+
    8) clear
 read -p "Введите id сессии: " SESSION
 $PROGRAMPATH/rac session --cluster=$CLUSTER terminate --session=$SESSION;;
+
    0) exit ;;
+
    *) echo
 echo "Неверно выбрана опция.";;
 
